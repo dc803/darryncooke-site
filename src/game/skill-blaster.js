@@ -23,8 +23,8 @@ const SKILLS = [
 const CSS = `
 .bl-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;outline:none;touch-action:none}
 .bl-ui{position:absolute;inset:0;pointer-events:none;font-family:Inter,system-ui,sans-serif}
-.bl-count{position:absolute;top:16px;left:16px;font:700 .8rem Orbitron,system-ui,sans-serif;letter-spacing:.08em;color:#fff;text-transform:uppercase;text-shadow:0 0 10px #00e5ff}
-.bl-toast{position:absolute;top:56px;left:50%;transform:translateX(-50%);width:min(560px,calc(100% - 32px));text-align:center;padding:10px 16px;border-radius:12px;background:rgba(10,6,24,.9);border:1.5px solid #00e5ff;box-shadow:0 0 18px rgba(0,229,255,.5);opacity:0;transition:opacity .2s}
+.bl-count{position:absolute;top:12px;left:12px;padding:6px 12px;border-radius:10px;background:#0a0618;border:1.5px solid #ff2e88;font:700 .8rem Orbitron,system-ui,sans-serif;letter-spacing:.08em;color:#fff;text-transform:uppercase;text-shadow:0 0 10px #00e5ff}
+.bl-toast{position:absolute;top:56px;left:50%;transform:translateX(-50%);width:min(560px,calc(100% - 32px));text-align:center;padding:10px 16px;border-radius:12px;background:#0a0618;border:1.5px solid #00e5ff;box-shadow:0 0 18px rgba(0,229,255,.5);opacity:0;transition:opacity .2s}
 .bl-toast.on{opacity:1}
 .bl-toast b{display:block;font:700 1rem Orbitron,system-ui,sans-serif;color:#ff2e88;text-shadow:0 0 12px #ff2e88}
 .bl-toast span{display:block;margin-top:2px;font-size:.95rem;color:#fff}
@@ -123,32 +123,85 @@ export function createGame(stage, { resumeHref, close }) {
       s.fillRect(rnd(0, W), rnd(0, H - floorH()), Math.random() > 0.8 ? 2 : 1, Math.random() > 0.8 ? 2 : 1);
     }
     if (ship) for (const o of [ship, ...rocks]) { o.x = Math.min(o.x, W); o.y = Math.min(o.y, H); }
+    if (rocks) for (const r of rocks) { layout(r); keepOut(r); }
   }
 
-  function makeRock(i) {
-    const r = 46 * scale;
-    let x, y;
-    do { x = rnd(0, W); y = rnd(0, H); } while (Math.hypot(x - W / 2, y - H / 2) < 170);
-    const sp = rnd(18, 42), dir = rnd(0, Math.PI * 2);
-    const n = 10;
-    return {
-      i, x, y, r,
-      vx: Math.cos(dir) * sp, vy: Math.sin(dir) * sp,
-      a: rnd(0, 6.28), va: rnd(-0.5, 0.5),
-      color: COLORS[i % 3],
-      verts: Array.from({ length: n }, (_, k) => [(k / n) * Math.PI * 2, rnd(0.82, 1.1)]),
-      lines: wrap(SKILLS[i][0]),
-    };
+  // UI areas asteroids must not drift under: the close button, and the touch controls on touch devices.
+  const CONTROLS_H = 100;
+  const zones = () => {
+    const z = [{ x: W - 62, y: 0, w: 62, h: 62 }];
+    if (isTouch) z.push({ x: 0, y: H - CONTROLS_H, w: W, h: CONTROLS_H });
+    return z;
+  };
+  const playH = () => (isTouch ? H - CONTROLS_H : H);
+
+  // Push an asteroid out of any no-go zone and reflect its velocity off it.
+  function keepOut(r) {
+    for (const z of zones()) {
+      const cx = Math.max(z.x, Math.min(r.x, z.x + z.w));
+      const cy = Math.max(z.y, Math.min(r.y, z.y + z.h));
+      let dx = r.x - cx, dy = r.y - cy, d = Math.hypot(dx, dy);
+      if (d >= r.r) continue;
+      if (d === 0) {
+        // Centre is inside the zone: leave through the nearest side.
+        const l = r.x - z.x, rt = z.x + z.w - r.x, t = r.y - z.y, b = z.y + z.h - r.y;
+        const m = Math.min(l, rt, t, b);
+        dx = m === l ? -1 : m === rt ? 1 : 0;
+        dy = m === t ? -1 : m === b ? 1 : 0;
+        d = 1;
+        r.x = cx + dx * r.r; r.y = cy + dy * r.r;
+      } else {
+        r.x += (dx / d) * (r.r - d); r.y += (dy / d) * (r.r - d);
+      }
+      const nx = dx / d, ny = dy / d, dot = r.vx * nx + r.vy * ny;
+      if (dot < 0) { r.vx -= 2 * dot * nx; r.vy -= 2 * dot * ny; }
+    }
   }
 
-  function wrap(text) {
+  const fontPx = () => Math.round(12 * Math.max(scale, 0.9));
+
+  function wrapAt(text, max) {
     const lines = [];
     let cur = '';
     for (const w of text.split(' ')) {
-      if (cur && (cur + ' ' + w).length > 13) { lines.push(cur); cur = w; } else cur = cur ? cur + ' ' + w : w;
+      if (cur && (cur + ' ' + w).length > max) { lines.push(cur); cur = w; } else cur = cur ? cur + ' ' + w : w;
     }
     lines.push(cur);
     return lines;
+  }
+
+  // Wrap the label to at most 3 lines and size the asteroid so the measured text block sits inside the outline.
+  function layout(r) {
+    ctx.font = `600 ${fontPx()}px Inter, system-ui, sans-serif`;
+    const lh = fontPx() * 1.2;
+    let best = null;
+    for (let max = 6; max <= 24; max++) {
+      const lines = wrapAt(SKILLS[r.i][0], max);
+      if (lines.length > 3) continue;
+      const w = Math.max(...lines.map((l) => ctx.measureText(l).width));
+      const need = Math.hypot(w / 2, (lines.length * lh) / 2);
+      if (!best || need < best.need) best = { lines, need };
+    }
+    r.lines = best.lines;
+    r.lh = lh;
+    // Outline radius is at least ~0.86 of r (vertex jitter plus the flat edges), so divide it out.
+    r.r = Math.max(36, (best.need + 8) / 0.86);
+  }
+
+  function makeRock(i) {
+    const sp = rnd(18, 42), dir = rnd(0, Math.PI * 2);
+    const n = 12;
+    const r = {
+      i, x: 0, y: 0, r: 0,
+      vx: Math.cos(dir) * sp, vy: Math.sin(dir) * sp,
+      a: rnd(0, 6.28), va: rnd(-0.5, 0.5),
+      color: COLORS[i % 3],
+      verts: Array.from({ length: n }, (_, k) => [(k / n) * Math.PI * 2, rnd(0.9, 1.05)]),
+    };
+    layout(r);
+    do { r.x = rnd(0, W); r.y = rnd(0, playH()); } while (Math.hypot(r.x - W / 2, r.y - H / 2) < 170);
+    keepOut(r);
+    return r;
   }
 
   function reset() {
@@ -177,13 +230,13 @@ export function createGame(stage, { resumeHref, close }) {
     }
   }
 
-  const wrapPos = (o, m) => {
+  const wrapPos = (o, m, h = H) => {
     if (o.x < -m) o.x += W + 2 * m; else if (o.x > W + m) o.x -= W + 2 * m;
-    if (o.y < -m) o.y += H + 2 * m; else if (o.y > H + m) o.y -= H + 2 * m;
+    if (o.y < -m) o.y += h + 2 * m; else if (o.y > h + m) o.y -= h + 2 * m;
   };
 
   function update(dt) {
-    if (state !== 'play') { for (const r of rocks) drift(r, dt); return; }
+    if (state !== 'play') { driftAll(dt); return; }
     if (keys.left) ship.a -= 4 * dt;
     if (keys.right) ship.a += 4 * dt;
     ship.thrusting = keys.thrust;
@@ -202,7 +255,7 @@ export function createGame(stage, { resumeHref, close }) {
       bullets.push({ x: ship.x + Math.cos(ship.a) * 16, y: ship.y + Math.sin(ship.a) * 16, vx: Math.cos(ship.a) * 620 + ship.vx, vy: Math.sin(ship.a) * 620 + ship.vy, life: 1.1 });
     }
 
-    for (const r of rocks) drift(r, dt);
+    driftAll(dt);
     for (const b of bullets) {
       b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt;
       wrapPos(b, 4);
@@ -238,9 +291,27 @@ export function createGame(stage, { resumeHref, close }) {
     parts = parts.filter((p) => p.life > 0);
   }
 
+  // Equal-mass bounce so labels don't pile on top of each other.
+  function driftAll(dt) {
+    for (const r of rocks) drift(r, dt);
+    for (let i = 0; i < rocks.length; i++) {
+      for (let j = i + 1; j < rocks.length; j++) {
+        const a = rocks[i], b = rocks[j];
+        const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy), min = a.r + b.r;
+        if (d >= min || d === 0) continue;
+        const nx = dx / d, ny = dy / d, push = (min - d) / 2;
+        a.x -= nx * push; a.y -= ny * push; b.x += nx * push; b.y += ny * push;
+        const rel = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
+        if (rel < 0) { a.vx += rel * nx; a.vy += rel * ny; b.vx -= rel * nx; b.vy -= rel * ny; }
+      }
+    }
+    for (const r of rocks) keepOut(r);
+  }
+
   function drift(r, dt) {
     r.x += r.vx * dt; r.y += r.vy * dt; r.a += r.va * dt;
-    wrapPos(r, r.r);
+    wrapPos(r, r.r, playH());
+    keepOut(r);
   }
 
   function finish() {
@@ -295,9 +366,9 @@ export function createGame(stage, { resumeHref, close }) {
       ctx.restore();
       // Label stays upright.
       ctx.shadowBlur = 0;
-      ctx.font = `600 ${Math.round(12 * Math.max(scale, 0.9))}px Inter, system-ui, sans-serif`;
+      ctx.font = `600 ${fontPx()}px Inter, system-ui, sans-serif`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      const lh = 14 * Math.max(scale, 0.9), y0 = r.y - ((r.lines.length - 1) * lh) / 2;
+      const lh = r.lh, y0 = r.y - ((r.lines.length - 1) * lh) / 2;
       r.lines.forEach((ln, n) => {
         ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(10,6,24,.9)';
         ctx.strokeText(ln, r.x, y0 + n * lh);
