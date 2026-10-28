@@ -6,3 +6,7 @@ dist
 *.log
 /darryn-cooke-neon-headshot.jpg
 /Darryn Cooke Resume - Nov 2026.pdf
+
+.vercel
+.env*
+.lh.json
