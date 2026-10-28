@@ -36,13 +36,53 @@ async function gallery(prefix: string) {
 const reportforge = await gallery('reportforge');
 const jobEvaluator = await gallery('job-evaluator');
 
-const background = [
-  'MyComplianceOffice (2014–2020): global compliance SaaS support and implementation, team of 5 across the US, Ireland, and Hong Kong, 96%+ client satisfaction',
-  'IgniteTech',
-  'Uzabase',
-  'Salesforce and Dynamics CRM implementations',
-  'BA, UC Irvine',
-  '15 years as a certified basketball official',
+const jobs = [
+  {
+    role: 'Senior Technical Program Manager',
+    org: 'Albany Medical Center',
+    dates: '2023–present',
+    intro: 'Lead concurrent enterprise programs, $1M–$10M+, across a four-hospital health system, and was given larger, higher-risk programs each year.',
+    bullets: [
+      ['UKG Workforce Management:', 'leading 7 of 11 workstreams, 150+ participants, seven-figure budget.'],
+      ['StrataJazz Cost Accounting:', '200+ integrations across four hospitals, delivered on schedule.'],
+      ['Workday Supply Chain & Finance:', 'took over 90+ integrations as a new hire, including the highest-risk ones, and drove them to a clean go-live.'],
+      ['Epic Willow:', 'authored a seven-figure business case that leadership adopted.'],
+      ['', 'Run the operating rhythm: plans, risk and issue logs, decision records, and executive status reporting.'],
+      ['', 'Coordinate clinical, IT, finance, HR, supply chain, and vendors, none of whom report to me.'],
+    ],
+  },
+  {
+    role: 'Technical Support Manager / IT Operations',
+    org: 'MyComplianceOffice',
+    dates: '2014–2020',
+    bullets: [
+      ['', 'Led global support and client implementations for a compliance platform used by banks and investment firms.'],
+      ['', 'Managed a team of 5 across the US, Ireland, and Hong Kong, with 96%+ client satisfaction.'],
+      ['', 'Built the client portal, documentation library, and training program from scratch.'],
+    ],
+  },
+  {
+    role: 'Enterprise Software Sales',
+    org: 'IgniteTech & Uzabase',
+    dates: '2021–2022',
+    bullets: [
+      ['', "Worked enterprise deals end to end with executive, legal, and technical stakeholders. It taught me the buyer's side of every implementation I've run since."],
+    ],
+  },
+  {
+    role: 'Digital Marketing & CRM Leadership',
+    org: '',
+    dates: '2002–2014',
+    bullets: [
+      ['', 'Led full Salesforce and Microsoft Dynamics implementations, from requirements through user adoption.'],
+    ],
+  },
+];
+
+const skills = [
+  ['Program delivery', ['Enterprise program management', 'Multi-workstream delivery', 'Risk, issue & dependency management', 'Executive reporting', 'Business cases', 'Vendor coordination', 'Agile & waterfall']],
+  ['AI & building', ['AI product delivery', 'LLM applications (Claude API)', 'AI verification & guardrails', 'Test harnesses', 'AI-assisted development', 'Rapid prototyping']],
+  ['Platforms & tools', ['Workday', 'UKG', 'StrataJazz', 'Salesforce', 'Microsoft Dynamics', 'Jira', 'Smartsheet', 'MS Project', 'Confluence', 'Supabase', 'Vercel']],
 ];
 ---
 
@@ -79,9 +119,10 @@ const background = [
       <a class="logo" href="#top" aria-label="Darryn Cooke, home">DC</a>
       <nav aria-label="Primary">
         <ul>
+          <li><a href="#about">About</a></li>
           <li><a href="#work">Work</a></li>
           <li><a href="#experience">Experience</a></li>
-          <li><a href="#built">How this was built</a></li>
+          <li><a href="#skills">Skills</a></li>
           <li><a class="btn" href="/Darryn_Cooke_Resume.pdf" download>Resume</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
@@ -139,22 +180,23 @@ const background = [
 
       <div class="wrap divider" aria-hidden="true"><svg class="sun"><use href="#sun"></use></svg></div>
 
-      <section class="block wrap" aria-labelledby="what">
-        <h2 class="title" id="what">What I do</h2>
-        <div class="cards">
-          <article class="card">
-            <h3>Deliver complex programs</h3>
-            <p>20 years of enterprise delivery: cross-functional teams, vendors, executives, and fixed go-live dates.</p>
-          </article>
-          <article class="card">
-            <h3>Build with AI, hands-on</h3>
-            <p>I take products from idea to production using AI as my development team, with me as product owner.</p>
-          </article>
-          <article class="card">
-            <h3>Make AI trustworthy</h3>
-            <p>My work centers on checking AI output before anyone acts on it.</p>
-          </article>
-        </div>
+      <section class="block wrap about" id="about" aria-labelledby="about-title">
+        <h2 class="title" id="about-title">About</h2>
+        <p>
+          I've spent 20 years where technology meets the business: running client implementations for a compliance
+          software company, selling enterprise software, and now leading Workday, UKG, and StrataJazz programs across a
+          four-hospital health system. The common thread is getting complex systems live, with people who don't report
+          to me, against deadlines that don't move.
+        </p>
+        <p>
+          In 2026 I started building with AI myself. Not to become an engineer, but to learn what it takes to make AI
+          dependable enough for finance, healthcare, and compliance work. ReportForge is the result. You get a program
+          manager who has shipped AI hands-on and knows where it breaks.
+        </p>
+        <p class="aside">
+          Off the clock, I've spent 15 years officiating high school and college basketball: fast calls, under
+          pressure, with everyone watching.
+        </p>
       </section>
 
       <div class="wrap divider" aria-hidden="true"><svg class="sun"><use href="#sun"></use></svg></div>
@@ -269,27 +311,65 @@ const background = [
 
       <div class="wrap divider" aria-hidden="true"><svg class="sun"><use href="#sun"></use></svg></div>
 
+      <section class="block wrap" id="help" aria-labelledby="help-title">
+        <h2 class="title" id="help-title">How I can help your team</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Run your AI rollout like a program</h3>
+            <p>Scope, risks, adoption, and the executive story that keeps it funded.</p>
+          </article>
+          <article class="card">
+            <h3>Prototype fast, then make it dependable</h3>
+            <p>Build a working version to prove the value, then scope the real build with engineering.</p>
+          </article>
+          <article class="card">
+            <h3>Put guardrails on AI output</h3>
+            <p>Add verification and review steps, so teams in regulated work can trust what AI produces.</p>
+          </article>
+        </div>
+      </section>
+
+      <div class="wrap divider" aria-hidden="true"><svg class="sun"><use href="#sun"></use></svg></div>
+
       <section class="block wrap" id="experience" aria-labelledby="exp-title">
         <h2 class="title" id="exp-title">Experience</h2>
-        <article class="card">
-          <h3 class="sub">Enterprise delivery at Albany Medical Center<span class="badge">2023–present</span></h3>
-          <ul>
-            <li><strong>UKG Workforce Management:</strong> leading 7 of 11 workstreams, 150+ participants, seven-figure budget.</li>
-            <li><strong>StrataJazz Cost Accounting:</strong> 200+ integrations across four hospitals, delivered on schedule.</li>
-            <li>
-              <strong>Workday Supply Chain &amp; Finance:</strong> took over 90+ integrations as a new hire, including the
-              highest-risk ones, and drove them to a clean go-live with no disruption to operations.
-            </li>
-            <li><strong>Epic Willow:</strong> authored a seven-figure business case that leadership adopted.</li>
-            <li>Also stood up the ConsortiEX pharmacy platform and Payfactors compensation tool end to end.</li>
-          </ul>
-        </article>
+        <div class="timeline">
+          {jobs.map((j) => (
+            <article class="t-item">
+              <div class="card">
+                <h3>{j.role}</h3>
+                <p class="meta">
+                  {j.org && <span>{j.org}</span>}
+                  <span class="badge">{j.dates}</span>
+                </p>
+                {j.intro && <p class="intro">{j.intro}</p>}
+                <ul>
+                  {j.bullets.map(([lead, text]) => (
+                    <li>{lead && <strong>{lead} </strong>}{text}</li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          ))}
+        </div>
+        <p class="edu">Education · BA, Economics, UC Irvine</p>
+      </section>
 
-        <div class="bg">
-          <h3>Background</h3>
-          <ul class="bg-list">
-            {background.map((b) => <li>{b}</li>)}
-          </ul>
+      <div class="wrap divider" aria-hidden="true"><svg class="sun"><use href="#sun"></use></svg></div>
+
+      <section class="block wrap" id="skills" aria-labelledby="skills-title">
+        <h2 class="title" id="skills-title">Skills</h2>
+        <div class="play">
+          <button type="button" class="btn primary big" id="play-blaster" hidden>▶ Play Skill Blaster</button>
+          <span>Prefer to blast them? Each one comes with proof.</span>
+        </div>
+        <div class="skill-groups">
+          {skills.map(([group, items]) => (
+            <div class="skill-group">
+              <h3>{group}</h3>
+              <ul class="chips">{items.map((i) => <li>{i}</li>)}</ul>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -318,4 +398,40 @@ const background = [
       <small>© {new Date().getFullYear()} Darryn Cooke</small>
     </div>
   </footer>
+  <dialog id="blaster" class="blaster" aria-label="Skill Blaster game">
+    <button type="button" class="blaster-close" id="blaster-close" aria-label="Close game">✕</button>
+    <div class="blaster-stage" id="blaster-stage"><p class="blaster-loading">Loading…</p></div>
+  </dialog>
+
+  <script>
+    const btn = document.getElementById('play-blaster') as HTMLButtonElement;
+    const dlg = document.getElementById('blaster') as HTMLDialogElement;
+    const stage = document.getElementById('blaster-stage') as HTMLElement;
+    type Game = { resume(): void; pause(): void };
+    let game: Game | undefined;
+
+    btn.hidden = false;
+    btn.addEventListener('click', async () => {
+      dlg.showModal();
+      document.body.classList.add('modal-open');
+      if (!game) {
+        const m = await import('../game/skill-blaster.js');
+        game = m.createGame(stage, {
+          resumeHref: '/Darryn_Cooke_Resume.pdf',
+          close: () => dlg.close(),
+        });
+      }
+      if (dlg.open) game.resume();
+    });
+    document.getElementById('blaster-close')!.addEventListener('click', () => dlg.close());
+    // The dialog has no padding, so a click that targets it is a backdrop click.
+    dlg.addEventListener('click', (e) => {
+      if (e.target === dlg) dlg.close();
+    });
+    dlg.addEventListener('close', () => {
+      game?.pause();
+      document.body.classList.remove('modal-open');
+      btn.focus();
+    });
+  </script>
 </Layout>
