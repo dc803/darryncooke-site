@@ -845,3 +845,58 @@ body.modal-open {
     border-radius: 0;
   }
 }
+
+/* ---------- Gallery captions and lightbox ---------- */
+.gallery {
+  align-items: start;
+}
+.gallery.single {
+  grid-template-columns: minmax(0, 640px);
+}
+.gallery figure {
+  margin: 0;
+}
+.gallery .shot {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  border-radius: 10px;
+}
+.gallery figcaption {
+  margin-top: 8px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.lightbox {
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background:
+    linear-gradient(#0a0618, #0a0618) padding-box,
+    linear-gradient(90deg, var(--pink), var(--cyan)) border-box;
+  width: fit-content;
+  max-width: 96vw;
+  max-height: 94vh;
+  overflow: auto;
+  cursor: zoom-out;
+  color: var(--muted);
+  box-shadow: -10px 0 40px -6px rgba(255, 46, 136, 0.6), 10px 0 40px -6px rgba(0, 229, 255, 0.6);
+}
+.lightbox::backdrop {
+  background: rgba(5, 2, 15, 0.85);
+  backdrop-filter: blur(6px);
+}
+.lightbox img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.lightbox p {
+  margin: 0;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+}

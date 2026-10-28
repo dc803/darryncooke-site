@@ -22,6 +22,12 @@ const stars = Array.from({ length: 110 }, () => ({
 // Galleries only render when matching screenshots exist in /public/images.
 const imgDir = path.join(process.cwd(), 'public', 'images');
 const files = fs.existsSync(imgDir) ? fs.readdirSync(imgDir).sort() : [];
+const captions: Record<string, string> = {
+  'reportforge-1.png': 'Trust 100: every figure in the report is checked against the source data (fact-check panel, right).',
+  'reportforge-2.png': 'Before generating, ReportForge flags swings with no explanation instead of inventing one.',
+  'reportforge-3.png': 'The finished narrative: unexplained swings are stated plainly, not guessed.',
+  'job-evaluator-1.png': 'Each role scored for fit and odds, with the reasoning saved (company names hidden).',
+};
 async function gallery(prefix: string) {
   const re = new RegExp(`^${prefix}-.*\\.png$`, 'i');
   return Promise.all(
@@ -29,7 +35,7 @@ async function gallery(prefix: string) {
       .filter((f) => re.test(f))
       .map(async (f) => {
         const { width, height } = await sharp(path.join(imgDir, f)).metadata();
-        return { src: `/images/${f}`, width, height };
+        return { src: `/images/${f}`, width, height, caption: captions[f] ?? '' };
       }),
   );
 }
@@ -260,9 +266,14 @@ const skills = [
           <a class="btn" href="https://reportforge-kappa.vercel.app" rel="noopener">Visit ReportForge →</a>
           {
             reportforge.length > 0 && (
-              <div class="gallery">
+              <div class={`gallery${reportforge.length === 1 ? ' single' : ''}`}>
                 {reportforge.map((g, i) => (
-                  <img src={g.src} width={g.width} height={g.height} alt={`ReportForge screenshot ${i + 1}`} loading="lazy" />
+                  <figure>
+                    <button type="button" class="shot" data-full={g.src} data-caption={g.caption} aria-label={`View full size: ${g.caption || 'ReportForge screenshot %d'}`.replace('%d', String(i + 1))}>
+                      <img src={g.src} width={g.width} height={g.height} alt={g.caption || `ReportForge screenshot ${i + 1}`} loading="lazy" />
+                    </button>
+                    {g.caption && <figcaption>{g.caption}</figcaption>}
+                  </figure>
                 ))}
               </div>
             )
@@ -299,9 +310,14 @@ const skills = [
           <a class="btn" href="https://github.com/dc803/job-hunt" rel="noopener">View on GitHub →</a>
           {
             jobEvaluator.length > 0 && (
-              <div class="gallery">
+              <div class={`gallery${jobEvaluator.length === 1 ? ' single' : ''}`}>
                 {jobEvaluator.map((g, i) => (
-                  <img src={g.src} width={g.width} height={g.height} alt={`AI Job Evaluator screenshot ${i + 1}`} loading="lazy" />
+                  <figure>
+                    <button type="button" class="shot" data-full={g.src} data-caption={g.caption} aria-label={`View full size: ${g.caption || 'AI Job Evaluator screenshot %d'}`.replace('%d', String(i + 1))}>
+                      <img src={g.src} width={g.width} height={g.height} alt={g.caption || `AI Job Evaluator screenshot ${i + 1}`} loading="lazy" />
+                    </button>
+                    {g.caption && <figcaption>{g.caption}</figcaption>}
+                  </figure>
                 ))}
               </div>
             )
@@ -402,6 +418,29 @@ const skills = [
     <button type="button" class="blaster-close" id="blaster-close" aria-label="Close game">✕</button>
     <div class="blaster-stage" id="blaster-stage"><p class="blaster-loading">Loading…</p></div>
   </dialog>
+
+  <dialog id="lightbox" class="lightbox" aria-label="Screenshot, full size">
+    <img alt="" />
+    <p></p>
+  </dialog>
+
+  <script>
+    const lb = document.getElementById('lightbox') as HTMLDialogElement;
+    const lbImg = lb.querySelector('img') as HTMLImageElement;
+    const lbCap = lb.querySelector('p') as HTMLElement;
+    document.querySelectorAll<HTMLButtonElement>('.shot').forEach((b) => {
+      b.addEventListener('click', () => {
+        lbImg.src = b.dataset.full!;
+        lbImg.alt = b.dataset.caption || '';
+        lbCap.textContent = b.dataset.caption ? `${b.dataset.caption} (click or press Esc to close)` : 'Click or press Esc to close';
+        lb.showModal();
+        lb.scrollTop = 0;
+        document.body.classList.add('modal-open');
+      });
+    });
+    lb.addEventListener('click', () => lb.close());
+    lb.addEventListener('close', () => document.body.classList.remove('modal-open'));
+  </script>
 
   <script>
     const btn = document.getElementById('play-blaster') as HTMLButtonElement;
