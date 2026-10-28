@@ -1,0 +1,8 @@
+﻿node_modules
+dist
+.astro
+.vercel
+.env*
+*.log
+/darryn-cooke-neon-headshot.jpg
+/Darryn Cooke Resume - Nov 2026.pdf

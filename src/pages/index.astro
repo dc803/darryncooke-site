@@ -1,0 +1,321 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import sharp from 'sharp';
+import Layout from '../layouts/Layout.astro';
+
+// Deterministic starfield so builds are stable.
+let seed = 20261028;
+const rand = () => {
+  seed = (seed + 0x6d2b79f5) | 0;
+  let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+const stars = Array.from({ length: 110 }, () => ({
+  x: (rand() * 100).toFixed(2),
+  y: (Math.pow(rand(), 0.8) * 100).toFixed(2),
+  r: rand() > 0.8 ? 1 : 0.6,
+  o: (0.3 + rand() * 0.7).toFixed(2),
+}));
+
+// Galleries only render when matching screenshots exist in /public/images.
+const imgDir = path.join(process.cwd(), 'public', 'images');
+const files = fs.existsSync(imgDir) ? fs.readdirSync(imgDir).sort() : [];
+async function gallery(prefix: string) {
+  const re = new RegExp(`^${prefix}-.*\\.png$`, 'i');
+  return Promise.all(
+    files
+      .filter((f) => re.test(f))
+      .map(async (f) => {
+        const { width, height } = await sharp(path.join(imgDir, f)).metadata();
+        return { src: `/images/${f}`, width, height };
+      }),
+  );
+}
+const reportforge = await gallery('reportforge');
+const jobEvaluator = await gallery('job-evaluator');
+
+const background = [
+  'MyComplianceOffice (2014–2020): global compliance SaaS support and implementation, team of 5 across the US, Ireland, and Hong Kong, 96%+ client satisfaction',
+  'IgniteTech',
+  'Uzabase',
+  'Salesforce and Dynamics CRM implementations',
+  'BA, UC Irvine',
+  '15 years as a certified basketball official',
+];
+---
+
+<Layout
+  title="Darryn Cooke | Technical Program Manager who builds AI people can trust"
+  description="Technical Program Manager running $1M–$10M+ technology programs across a four-hospital health system, and building AI products of his own. Focus: the gap between “the AI can do it” and “we can rely on it.”"
+>
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="sun-fill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#ffe65a"></stop>
+        <stop offset="0.5" stop-color="#ff783c"></stop>
+        <stop offset="1" stop-color="#ff2e88"></stop>
+      </linearGradient>
+      <mask id="sun-stripes">
+        <rect width="100" height="100" fill="#fff"></rect>
+        <rect x="0" y="55" width="100" height="1.2" fill="#000"></rect>
+        <rect x="0" y="60.5" width="100" height="1.9" fill="#000"></rect>
+        <rect x="0" y="66.5" width="100" height="2.7" fill="#000"></rect>
+        <rect x="0" y="73" width="100" height="3.6" fill="#000"></rect>
+        <rect x="0" y="80.5" width="100" height="4.6" fill="#000"></rect>
+        <rect x="0" y="89" width="100" height="5.8" fill="#000"></rect>
+      </mask>
+      <symbol id="sun" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="48" fill="url(#sun-fill)" mask="url(#sun-stripes)"></circle>
+      </symbol>
+    </defs>
+  </svg>
+
+  <a class="skip" href="#work">Skip to content</a>
+
+  <header class="nav">
+    <div class="wrap">
+      <a class="logo" href="#top" aria-label="Darryn Cooke, home">DC</a>
+      <nav aria-label="Primary">
+        <ul>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#built">How this was built</a></li>
+          <li><a class="btn" href="/Darryn_Cooke_Resume.pdf" download>Resume</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="name">
+      <div class="sky"></div>
+      <svg class="stars" aria-hidden="true">
+        {stars.map((s) => <circle cx={`${s.x}%`} cy={`${s.y}%`} r={s.r} fill="#fff" opacity={s.o} />)}
+      </svg>
+      <div class="floor" aria-hidden="true">
+        <div class="plane"><i></i></div>
+      </div>
+
+      <div class="wrap hero-grid">
+        <div>
+          <h1 id="name">Darryn Cooke</h1>
+          <p class="tagline">Technical Program Manager who builds AI people can trust.</p>
+          <p class="lede">
+            I run $1M–$10M+ technology programs across a four-hospital health system, and I design and ship AI
+            products of my own. My focus is the gap between "the AI can do it" and "we can rely on it."
+          </p>
+          <div class="cta">
+            <a class="btn primary" href="#work">See my work</a>
+            <a class="btn" href="/Darryn_Cooke_Resume.pdf" download>Download resume</a>
+            <a class="btn" href="https://linkedin.com/in/darryncooke" rel="noopener">LinkedIn →</a>
+          </div>
+        </div>
+        <div class="portrait">
+          <img
+            src="/images/darryn-cooke-neon-headshot-900.jpg"
+            srcset="/images/darryn-cooke-neon-headshot-600.jpg 600w, /images/darryn-cooke-neon-headshot-900.jpg 900w"
+            sizes="(max-width: 900px) 80vw, 460px"
+            width="900"
+            height="900"
+            alt="Darryn Cooke smiling, in front of a neon synthwave sunset"
+            fetchpriority="high"
+          />
+        </div>
+      </div>
+    </section>
+
+    <div class="lower">
+      <section class="stats wrap" aria-label="Highlights">
+        <ul>
+          <li><strong>20</strong><span>years enterprise delivery</span></li>
+          <li><strong>$1M–$10M+</strong><span>programs</span></li>
+          <li><strong>500+</strong><span>system integrations</span></li>
+          <li><strong>3</strong><span>AI reports in production</span></li>
+        </ul>
+      </section>
+
+      <div class="wrap divider" aria-hidden="true"><svg class="sun"><use href="#sun"></use></svg></div>
+
+      <section class="block wrap" aria-labelledby="what">
+        <h2 class="title" id="what">What I do</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Deliver complex programs</h3>
+            <p>20 years of enterprise delivery: cross-functional teams, vendors, executives, and fixed go-live dates.</p>
+          </article>
+          <article class="card">
+            <h3>Build with AI, hands-on</h3>
+            <p>I take products from idea to production using AI as my development team, with me as product owner.</p>
+          </article>
+          <article class="card">
+            <h3>Make AI trustworthy</h3>
+            <p>My work centers on checking AI output before anyone acts on it.</p>
+          </article>
+        </div>
+      </section>
+
+      <div class="wrap divider" aria-hidden="true"><svg class="sun"><use href="#sun"></use></svg></div>
+
+      <section class="block wrap" id="work" aria-labelledby="work-title">
+        <h2 class="title" id="work-title">Work</h2>
+
+        <article class="card case" aria-labelledby="rf">
+          <h3 class="case-title" id="rf"><small>Case study 1</small>ReportForge</h3>
+          <dl class="rows">
+            <div class="row">
+              <dt>Problem</dt>
+              <dd>
+                AI can write a financial report in seconds, but it will sometimes invent a number. In finance, one
+                made-up figure ruins trust in the whole report. That's the main thing holding companies back from
+                using AI for real work.
+              </dd>
+            </div>
+            <div class="row">
+              <dt>What I built</dt>
+              <dd>
+                A reporting product where every number the AI writes is checked against the source data before the
+                report goes out. Each figure passes four checks: is it sourced, is anything missing, is the math
+                right, are the names right. Numbers that can't be verified get flagged or blocked, and each report
+                gets a 0–100 trust score instead of a black-box pass/fail.
+              </dd>
+            </div>
+            <div class="row">
+              <dt>Keeping it honest</dt>
+              <dd>
+                I built a test harness that deliberately tries to trick the AI into making things up. If the trust
+                score drops, the build fails.
+              </dd>
+            </div>
+            <div class="row">
+              <dt>The product call</dt>
+              <dd>
+                I first built it to handle dozens of report types. Once the verification engine was proven, I cut the
+                scope to three finance reports done well: flux analysis (why numbers changed), budget vs. actual, and
+                price-volume-mix (what drove revenue up or down). Narrowing it was the hardest and best decision on
+                the project.
+              </dd>
+            </div>
+            <div class="row">
+              <dt>How it was built</dt>
+              <dd>
+                Solo, with AI as the developer and me as product manager. That meant a ticketed backlog, a Strategist
+                → Critic → Planner review step for big design decisions, roughly 3,000 automated tests, and security
+                reviews.
+              </dd>
+            </div>
+            <div class="row">
+              <dt>Built with</dt>
+              <dd>
+                <ul class="chips">
+                  <li>React</li><li>Node</li><li>Supabase</li><li>Claude API</li><li>Vercel + Railway</li>
+                </ul>
+              </dd>
+            </div>
+          </dl>
+          <a class="btn" href="https://reportforge-kappa.vercel.app" rel="noopener">Visit ReportForge →</a>
+          {
+            reportforge.length > 0 && (
+              <div class="gallery">
+                {reportforge.map((g, i) => (
+                  <img src={g.src} width={g.width} height={g.height} alt={`ReportForge screenshot ${i + 1}`} loading="lazy" />
+                ))}
+              </div>
+            )
+          }
+        </article>
+
+        <article class="card case" aria-labelledby="je">
+          <h3 class="case-title" id="je"><small>Case study 2</small>AI Job Evaluator</h3>
+          <dl class="rows">
+            <div class="row">
+              <dt>Problem</dt>
+              <dd>
+                A serious job search is a pipeline problem: dozens of postings, each needing an honest fit assessment
+                and tailored materials.
+              </dd>
+            </div>
+            <div class="row">
+              <dt>What I built</dt>
+              <dd>
+                An open-source tool that helps job seekers use AI to evaluate postings honestly instead of applying
+                to everything. You set your criteria once. AI then scores each job on fit and odds, explains its
+                reasoning, and splits the requirements into what you meet, what you don't, and what you could close.
+                It drafts tailored materials for the roles worth pursuing.
+              </dd>
+            </div>
+            <div class="row">
+              <dt>Why it matters</dt>
+              <dd>
+                I've run my own search through it, 37 roles so far. It's the pattern I bring to any team: define the
+                rules clearly, let AI handle the volume, keep a human on the final call.
+              </dd>
+            </div>
+          </dl>
+          <a class="btn" href="https://github.com/dc803/job-hunt" rel="noopener">View on GitHub →</a>
+          {
+            jobEvaluator.length > 0 && (
+              <div class="gallery">
+                {jobEvaluator.map((g, i) => (
+                  <img src={g.src} width={g.width} height={g.height} alt={`AI Job Evaluator screenshot ${i + 1}`} loading="lazy" />
+                ))}
+              </div>
+            )
+          }
+        </article>
+      </section>
+
+      <div class="wrap divider" aria-hidden="true"><svg class="sun"><use href="#sun"></use></svg></div>
+
+      <section class="block wrap" id="experience" aria-labelledby="exp-title">
+        <h2 class="title" id="exp-title">Experience</h2>
+        <article class="card">
+          <h3 class="sub">Enterprise delivery at Albany Medical Center<span class="badge">2023–present</span></h3>
+          <ul>
+            <li><strong>UKG Workforce Management:</strong> leading 7 of 11 workstreams, 150+ participants, seven-figure budget.</li>
+            <li><strong>StrataJazz Cost Accounting:</strong> 200+ integrations across four hospitals, delivered on schedule.</li>
+            <li>
+              <strong>Workday Supply Chain &amp; Finance:</strong> took over 90+ integrations as a new hire, including the
+              highest-risk ones, and drove them to a clean go-live with no disruption to operations.
+            </li>
+            <li><strong>Epic Willow:</strong> authored a seven-figure business case that leadership adopted.</li>
+            <li>Also stood up the ConsortiEX pharmacy platform and Payfactors compensation tool end to end.</li>
+          </ul>
+        </article>
+
+        <div class="bg">
+          <h3>Background</h3>
+          <ul class="bg-list">
+            {background.map((b) => <li>{b}</li>)}
+          </ul>
+        </div>
+      </section>
+
+      <div class="wrap divider" aria-hidden="true"><svg class="sun"><use href="#sun"></use></svg></div>
+
+      <section class="block wrap built" id="built" aria-labelledby="built-title">
+        <h2 class="title" id="built-title">How this site was built</h2>
+        <article class="card">
+          <p>
+            I designed this site with Claude as my product and design partner, and Claude Code wrote and deployed
+            every line. This is how I work now.
+          </p>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <footer id="contact">
+    <div class="wrap">
+      <svg class="sun" aria-hidden="true"><use href="#sun"></use></svg>
+      <h2>Let's talk about putting AI to work, safely.</h2>
+      <div class="links">
+        <a href="mailto:dc@darryncooke.com">dc@darryncooke.com</a>
+        <a href="https://linkedin.com/in/darryncooke" rel="noopener">LinkedIn</a>
+      </div>
+      <small>© {new Date().getFullYear()} Darryn Cooke</small>
+    </div>
+  </footer>
+</Layout>
