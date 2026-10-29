@@ -410,10 +410,16 @@ const skills = [
       <div class="links">
         <a href="mailto:dc@darryncooke.com">dc@darryncooke.com</a>
         <a href="https://linkedin.com/in/darryncooke" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <button type="button" class="neon-link" id="neon-open-link" hidden>Chat with NEON</button>
       </div>
       <small>© {new Date().getFullYear()} Darryn Cooke</small>
     </div>
   </footer>
+  <button type="button" class="neon-fab" id="neon-open" aria-label="Ask NEON, Darryn's AI assistant" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="6" fill="#ff2e88"/><path d="M12 2v3M4.2 5.2l2 2M19.8 5.2l-2 2M2 13h3M19 13h3" stroke="#00e5ff" stroke-width="2" stroke-linecap="round"/></svg>
+    Ask NEON
+  </button>
+
   <dialog id="blaster" class="blaster" aria-label="Skill Blaster game">
     <button type="button" class="blaster-close" id="blaster-close" aria-label="Close game">✕</button>
     <div class="blaster-stage" id="blaster-stage"><p class="blaster-loading">Loading…</p></div>
@@ -440,6 +446,24 @@ const skills = [
     });
     lb.addEventListener('click', () => lb.close());
     lb.addEventListener('close', () => document.body.classList.remove('modal-open'));
+  </script>
+
+  <script>
+    const fab = document.getElementById('neon-open') as HTMLButtonElement;
+    const fabLink = document.getElementById('neon-open-link') as HTMLButtonElement;
+    type Chat = { open(): void };
+    let chat: Chat | undefined;
+
+    fab.hidden = fabLink.hidden = false;
+    async function openChat() {
+      if (!chat) {
+        const m = await import('../chat/neon.js');
+        chat = m.createChat({ onClose: () => fab.focus() });
+      }
+      chat.open();
+    }
+    fab.addEventListener('click', openChat);
+    fabLink.addEventListener('click', openChat);
   </script>
 
   <script>

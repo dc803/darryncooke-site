@@ -912,3 +912,42 @@ body.modal-open {
     height: 200px;
   }
 }
+
+/* ---------- NEON chat launcher (the panel itself loads on click) ---------- */
+.neon-fab {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  border: 2px solid var(--pink);
+  background: var(--ink);
+  color: #fff;
+  font: 700 0.9rem var(--font-head);
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  box-shadow: 0 0 18px rgba(255, 46, 136, 0.55), 0 0 26px rgba(0, 229, 255, 0.3);
+}
+.neon-fab:hover {
+  background: #1a0838;
+}
+.neon-fab svg {
+  width: 20px;
+  height: 20px;
+}
+footer .links .neon-link {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+body.modal-open .neon-fab {
+  display: none;
+}
