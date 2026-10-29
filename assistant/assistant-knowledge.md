@@ -51,7 +51,7 @@ Senior Technical Program Manager across a four-hospital health system. Runs conc
 - This assistant is part of the same demo: it answers only from verified facts and says "I don't know" instead of guessing, the same principle as ReportForge.
 
 ## Earlier experience
-- MyComplianceOffice (2014 – 2020), Technical Support Manager / IT Operations: led global support and client implementations for a compliance platform used by banks and investment firms. Managed a team of 5 across the US, Ireland, and Hong Kong with 96%+ client satisfaction. Built the client portal, documentation library, and training program from scratch. Ran onboarding, including environment configuration, access controls, and customizations.
+- MyComplianceOffice (2014 – 2020), Technical Support Manager / IT Operations: led global support and client implementations for a fintech compliance software (SaaS) platform used by banks and investment firms, in a regulated, security-sensitive environment. This is his financial-services / fintech experience: six years working with banking and investment clients. Managed a team of 5 across the US, Ireland, and Hong Kong with 96%+ client satisfaction. Built the client portal, documentation library, and training program from scratch. Ran onboarding, including environment configuration, access controls, and customizations.
 - IgniteTech (2021 – 2022) and Uzabase (2022): enterprise software sales. Worked deals end to end with executive, legal, and technical stakeholders, which taught him the buyer's side of every implementation since.
 - Digital Marketing & CRM Leadership (2002 – 2014): led full Salesforce and Microsoft Dynamics implementations, from requirements through user adoption.
 
