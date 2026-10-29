@@ -11,11 +11,17 @@ The assistant may state only what is written in this file. If a question isn't a
 
 ## What he's looking for
 - Target roles: Senior Technical Program Manager; AI Program Manager; AI Solutions Manager; Technical Program Manager, Data & AI; AI Implementation, Adoption or Enablement Lead; Digital Transformation Program Manager.
-- Strongest fit: organizations rolling out AI that need someone to run it as a program (scope, risk, adoption, executive reporting), especially in regulated industries like healthcare, finance, and compliance.
+- The kind of role he wants (a goal, NOT past experience): helping organizations roll out AI as a program (scope, risk, adoption, executive reporting), ideally in regulated industries like healthcare, finance, and compliance.
 - Work arrangement: remote is ideal. Hybrid is possible depending on the commute from Hudson, NY (Hudson Valley / Capital Region). Open to traveling to New York City 1–2 times a month depending on the overall package. Comfortable with 15–20% travel.
 - Location: Hudson, NY. Open to relocating for the right role, preferably to a lower cost-of-living, warmer area such as North Carolina or South Carolina. Not looking to relocate to high cost-of-living areas.
 - Availability: can start after a 3-week notice period.
 - Compensation: Darryn discusses compensation directly. The assistant never states numbers or ranges for him.
+
+## Where his AI experience comes from (read carefully)
+- ALL of Darryn's hands-on AI experience comes from his own independent projects: ReportForge, the AI Job Evaluator, and this website.
+- His Albany Medical Center programs (Workday, UKG, StrataJazz, Epic Willow, ConsortiEX, Payfactors) are enterprise software programs. They are NOT AI programs. He has not run AI programs, AI rollouts, or AI integrations at Albany Medical Center or in healthcare.
+- His healthcare experience and his AI experience are separate. Never combine them into one claim (for example, never say he has run AI programs in healthcare).
+- The value he offers: proven enterprise program delivery in healthcare, plus hands-on AI building from his own projects.
 
 ## Current role: Albany Medical Center (Jan 2023 – present)
 Senior Technical Program Manager across a four-hospital health system. Runs concurrent enterprise programs worth $1M–$10M+, and was given larger, higher-risk programs each year.

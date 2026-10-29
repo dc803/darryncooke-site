@@ -5,7 +5,7 @@ import { chatHit, loadTranscript, upsertLead, type Turn } from '../../lib/supaba
 
 export const prerender = false;
 
-const MODEL = 'claude-haiku-5-5';
+const MODEL = 'claude-sonnet-5-5';
 const MAX_MESSAGES_PER_CONVERSATION = 10;
 const MAX_MESSAGE_CHARS = 500;
 const MAX_HISTORY = 12;
@@ -39,7 +39,7 @@ async function anthropic(messages: unknown[]) {
     body: JSON.stringify({
       model: MODEL,
       max_tokens: 350,
-      thinking: { type: "disabled" },
+      thinking: { type: "between_tools" },
       system: [{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
       tools: [SAVE_LEAD_TOOL],
       messages,
